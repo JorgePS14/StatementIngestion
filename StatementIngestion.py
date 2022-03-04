@@ -22,13 +22,11 @@ def bbva(filename):
     statement = pdf.PdfFileReader(f)
     n = statement.numPages
 
-    print(n)
-
     for i in range(n):
         currPage = statement.getPage(i).extractText()
 
         while True:
-            match = re.search("([0-9]{2}/[0-9]{2}/[0-9]{2}[0-9]{2}/[0-9]{2}/[0-9]{2} [A-Z 0-9]+([A-Z]{3} |[A-Z]{4})[0-9]{6}[A-Z0-9]{3}\*{6}[0-9]{4}\$[0-9\,]+\.[0-9]{2})", currPage)
+            match = re.search("([0-9]{2}/[0-9]{2}/[0-9]{2}[0-9]{2}/[0-9]{2}/[0-9]{2} [A-Z 0-9-]+(([A-Z]{3} |[A-Z]{4})[0-9]{6}[A-Z0-9]{3}){0,1}\*{0,6}[0-9]{0,4}\$[0-9\,]+\.[0-9]{2}-*)", currPage)
             if not match:
                 break
             row = []
@@ -36,8 +34,16 @@ def bbva(filename):
 
             row.append(movement[0 : 8])
 
-            rfcStart = re.search("([A-Z]{3} |[A-Z]{4})[0-9]{6}[A-Z0-9]{3}", movement).span(0)[0]
-            row.append(movement[17 : rfcStart])
+            rfcMatch = re.search("([A-Z]{3} |[A-Z]{4})[0-9]{6}[A-Z0-9]{3}", movement)
+
+            if not rfcMatch:
+                if movement.find('*') > 0:
+                    row.append(movement[17 : movement.find('*')])
+                else:
+                    row.append(movement[17 : movement.find('$')])
+            else:
+                rfcStart = re.search("([A-Z]{3} |[A-Z]{4})[0-9]{6}[A-Z0-9]{3}", movement).span(0)[0]
+                row.append(movement[17 : rfcStart])
 
             row.append(movement[movement.find('$') + 1 :])
 
