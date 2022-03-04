@@ -42,7 +42,7 @@ def bbva(filename):
                 else:
                     row.append(movement[17 : movement.find('$')])
             else:
-                rfcStart = re.search("([A-Z]{3} |[A-Z]{4})[0-9]{6}[A-Z0-9]{3}", movement).span(0)[0]
+                rfcStart = rfcMatch.span(0)[0]
                 row.append(movement[17 : rfcStart])
 
             row.append(movement[movement.find('$') + 1 :])
