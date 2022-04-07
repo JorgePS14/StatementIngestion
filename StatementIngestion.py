@@ -26,7 +26,7 @@ def bbva(filename):
         currPage = statement.getPage(i).extractText()
 
         while True:
-            match = re.search("([0-9]{2}/[0-9]{2}/[0-9]{2}[0-9]{2}/[0-9]{2}/[0-9]{2} [A-Z 0-9-]+(([A-Z]{3} |[A-Z]{4})[0-9]{6}[A-Z0-9]{3}){0,1}\*{0,6}[0-9]{0,4}\$[0-9\,]+\.[0-9]{2}-*)", currPage)
+            match = re.search("([0-9]{2}/[0-9]{2}/[0-9]{2}[0-9]{2}/[0-9]{2}/[0-9]{2}(CF|CD| )?[A-Z 0-9-\*]+(([A-Z]{3} |[A-Z]{4})[0-9]{6}[A-Z0-9]{3}){0,1}\*{0,6}[0-9]{0,4}\$[0-9\,]+\.[0-9]{2}-?)", currPage)
             if not match:
                 break
             row = []
@@ -70,7 +70,7 @@ def hsbc(filename):
                 row = []
 
                 row.append(movement[0 : 6])
-                price = re.search("[0-9]+\.[0-9]{2}", movement)
+                price = re.search("[0-9,]+\.[0-9]{2}", movement)
                 row.append(movement[19 : price.span(0)[0] - 4])
                 row.append(movement[price.span(0)[0] : price.span(0)[1]])
                 writer.writerow(row)
